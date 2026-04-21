@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Cartoon Generator</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI';}
+
+body{
+    min-height:100vh;
+    background: linear-gradient(135deg,#0f172a,#2563eb,#7c3aed);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.container{
+    width:95%;
+    max-width:1100px;
+    padding:30px;
+    border-radius:25px;
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(18px);
+    box-shadow:0 10px 40px rgba(0,0,0,0.4);
+    text-align:center;
+    color:white;
+}
+
+h1{font-size:36px;margin-bottom:10px;}
+p{opacity:0.8;margin-bottom:20px;}
+
+.drop-area{
+    border:2px dashed rgba(255,255,255,0.5);
+    padding:25px;
+    border-radius:15px;
+    cursor:pointer;
+}
+
+input[type="file"]{
+    margin-top:10px;
+}
+
+button{
+    padding:12px 28px;
+    border:none;
+    border-radius:12px;
+    background:#22c55e;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    margin-top:15px;
+}
+
+button:hover{
+    background:#16a34a;
+    transform:scale(1.05);
+}
+
+.images{
+    margin-top:30px;
+    display:flex;
+    justify-content:space-around;
+    flex-wrap:wrap;
+}
+
+.card{
+    background:rgba(255,255,255,0.08);
+    padding:15px;
+    border-radius:15px;
+    margin:10px;
+}
+
+.card img{
+    width:320px;
+    border-radius:12px;
+    box-shadow:0 6px 25px rgba(0,0,0,0.5);
+}
+
+/* Loader */
+.loader{
+    margin-top:20px;
+    display:none;
+}
+
+.loader span{
+    display:inline-block;
+    width:10px;
+    height:10px;
+    background:white;
+    margin:3px;
+    border-radius:50%;
+    animation: bounce 0.6s infinite alternate;
+}
+
+.loader span:nth-child(2){ animation-delay:0.2s;}
+.loader span:nth-child(3){ animation-delay:0.4s;}
+
+@keyframes bounce{
+    to{ transform:translateY(-10px);}
+}
+</style>
+
+<script>
+function showLoader(){
+    document.getElementById("loader").style.display = "block";
+}
+
+function previewImage(event){
+    const reader = new FileReader();
+    reader.onload = function(){
+        document.getElementById("preview").src = reader.result;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🎨 AI Cartoon Generator</h1>
+<p>Upload your image and convert into cartoon painting</p>
+
+<form method="POST" enctype="multipart/form-data" onsubmit="showLoader()">
+
+    <div class="drop-area">
+        <p>Click to Upload Image</p>
+        <input type="file" name="image" required onchange="previewImage(event)">
+    </div>
+
+    <img id="preview" style="margin-top:15px;width:200px;border-radius:10px;">
+
+    <br>
+    <button type="submit">✨ Convert</button>
+</form>
+
+<div class="loader" id="loader">
+    <span></span><span></span><span></span>
+</div>
+
+{% if output and original %}
+<div class="images">
+
+    <div class="card">
+        <p>📷 Original</p>
+        <img src="{{ original }}">
+    </div>
+
+    <div class="card">
+        <p>🎨 Cartoon</p>
+        <img src="{{ output }}">
+    </div>
+
+</div>
+
+<br>
+<a href="{{ output }}" download>
+    <button>⬇ Download Image</button>
+</a>
+{% endif %}
+
+</div>
+
+</body>
+</html>
